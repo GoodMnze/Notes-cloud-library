@@ -1,5 +1,4 @@
 # Redis.md
-![思维导图]([./img/2022-09-27-21-28-08.png](https://github.com/GoodMnze/Notes-cloud-library/blob/main/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/img/2022-09-27-21-28-08.png))
 ## 概述
 
 >**Redis**一款基于 Key-Value 的 NoSQL 数据库,基于内存存储数据，提供多种持久化机制，性能强悍，提供主从，哨兵以及集群的大家方式，更方便横向扩张以及垂直扩展
