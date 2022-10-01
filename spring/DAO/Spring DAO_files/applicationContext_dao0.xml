@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--1、配置扫描器-->
+    <context:component-scan base-package="com.study.pojo"/>
+    <!--2、加载JDBC连接配置文件PropertyPlaceholderConfigurer-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list><value>jdbc.properties</value></list>
+        </property>
+    </bean>
+    <!--3、加载数据源对象 LazyConnectionDataSourceProxy-->
+    <bean id="druid_ds" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <property name="targetDataSource">
+            <bean class="com.alibaba.druid.pool.DruidDataSource">
+                <!--阿里巴巴的数据源可以根据数据库其他连接信息，自动识别驱动-->
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.user}"/>
+                <property name="password" value="${jdbc.pwd}"/>
+                <property name="minIdle" value="1"/><!--最小连接数-->
+                <property name="initialSize" value="1"/><!--初始连接数大小-->
+                <property name="maxActive" value="5"/><!--最大活跃数-->
+            </bean>
+        </property>
+    </bean>
+    <!--4、加载JdbcTemplate对象-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="druid_ds"/>
+    </bean>
+
+
+</beans>

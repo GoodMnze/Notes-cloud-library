@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--利用DI依赖注入，实现对bean对象的实例化-->
+    <bean id="mydate" class="java.util.Date"/><!--调用util.Date的无参构造方法-->
+    <!--1、构造器注入-->
+    <bean class="org.example.lesson2.Student">
+        <!--① 根据参数名字来赋值  value表示参数值-->
+        <constructor-arg name="sid" value="1"/>
+        <constructor-arg name="sname" value="房里叔"/>
+        <constructor-arg name="sex" value="男"/>
+        <!--
+            Date mydate = new Date();
+            this.birth = mydate;
+            ref属性，引用了一个bean对象
+        -->
+        <constructor-arg name="birth" ref="mydate"/>
+        <constructor-arg name="sal" value="899"/>
+    </bean>
+
+    <bean class="org.example.lesson2.Student">
+        <!--② 根据参数类型 顺序不所谓，需要有对应类型的构造方法
+            注意：根据类型注入，不会区分类型相同的重载构造方法
+        -->
+        <constructor-arg type="java.lang.Integer" value="999"/>
+        <constructor-arg type="java.lang.String" value="无烟莉"/>
+    </bean>
+
+    <bean class="org.example.lesson2.Student">
+        <!--③ 根据参数顺序，索引index来-->
+        <constructor-arg index="0" value="张三"/>
+        <constructor-arg index="1" ref="mydate"/>
+    </bean>
+    <!--2、setter方法注入，先调用无参构造创建实例对象，
+                        然后调用属性对应的setter方法来进行注入赋值-->
+    <bean id="stu_set1" class="org.example.lesson2.Student">
+        <!--
+            this.birth = new Date("2022/1/19");
+        -->
+        <property name="birth">
+            <bean class="java.util.Date">
+                <constructor-arg name="s" value="2022/1/19"/>
+            </bean>
+        </property>
+        <!--
+            this.sname="ddd";
+        -->
+        <property name="sname" value="xxx"/>
+        <property name="sal" value="334"/>
+    </bean>
+
+    <!--3、p命名空间，简写版（属性setter方法注入的简写版）-->
+    <bean class="org.example.lesson2.Student" p:sid="1" p:sname="流阿水"
+          p:sal="1234" p:birth-ref="mydate" p:sex="女"/>
+
+    <!--4、给集合或者数组注入值-->
+    <bean id="stu_other" class="org.example.lesson2.Student">
+        <!--数组private String[] foods;-->
+        <property name="foods">
+            <!--直接写value，只能给数组赋一个元素-->
+<!--            <value>茄子</value>-->
+            <array>
+                <value>萝卜</value>
+                <value>青菜</value>
+            </array>
+        </property>
+        <!--private Set<Integer> luckyNumber;-->
+        <property name="luckyNumber">
+            <set>
+                <value>1</value>
+                <value>2</value>
+            </set>
+        </property>
+        <!--private List<String> starts;-->
+        <property name="starts">
+            <list>
+                <value>蔡徐坤</value>
+                <value>小黑子</value>
+            </list>
+        </property>
+        <!--private Map<String,String> lover;-->
+        <property name="lover">
+            <map>
+                <entry key="菜花" value="菜菜"></entry>
+                <entry key="翠花" value="翠翠"></entry>
+            </map>
+        </property>
+        <!--private Set<Date> days;-->
+        <property name="days">
+            <set>
+                <bean class="java.util.Date"></bean>
+                <bean class="java.util.Date">
+                    <constructor-arg name="year" value="107"/>
+                    <constructor-arg name="month" value="1"/>
+                    <constructor-arg name="date" value="28"/>
+                </bean>
+            </set>
+        </property>
+        <property name="inschool" ref="sql_Date"/>
+    </bean>
+
+    <!--
+        sql.Date 拥有两个构造方法
+        1、sql.Date(long)
+        2、sql.Date(int,int,int)
+        平时常通过静态valueOf方法，来给sql.Date赋值
+
+        java.util.Date mydate = new java.util.Date();
+        java.sql.Date sql_Date = new java.sql.Date(mydate.getTime())
+
+    -->
+    <bean class="java.sql.Date" id="sql_Date">
+        <constructor-arg name="date">
+            <bean
+                    factory-bean="mydate"
+                    factory-method="getTime"/>
+        </constructor-arg>
+    </bean>
+</beans>

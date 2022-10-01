@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--ctrl+shift+/-->
+    <!--创建Bean对象，对属性就行注入-->
+    <!--① 构造器注入  —— 按照参数顺序来注入。索引从0开始-->
+    <bean class="com.study.di.Dept" id="dept">
+        <constructor-arg index="1" value="10"/>
+        <constructor-arg index="0" value="1"/>
+        <constructor-arg index="2" value="3"/>
+    </bean>
+    <!--② 构造器注入 —— 根据参数类型来注入,注入类型顺序必须和声明的顺序一致-->
+    <bean class="com.study.di.Dept" id="dept2">
+        <constructor-arg type="java.lang.String" value="湖南"/>
+        <constructor-arg type="java.lang.Integer" value="20"/>
+        <constructor-arg type="java.lang.String" value="公关部"/>
+    </bean>
+    <!--③ 构造器注入 —— 根据参数的名字来注入-->
+    <bean class="com.study.di.Dept" id="dept3">
+        <constructor-arg name="deptno" value="30"/>
+        <constructor-arg name="dname" value="一部"/>
+        <constructor-arg name="loc" value="哈哈"/>
+    </bean>
+
+    <!--构造器注入-->
+    <bean class="java.util.Date" id="ddd">
+        <constructor-arg name="s" value="2021/5/6"/>
+    </bean>
+    <bean class="com.study.di.Emp" id="emp">
+        <constructor-arg name="empno" value="4399"/>
+        <constructor-arg name="ename" value="杰克"/>
+        <!--参数类型是非基础数据类型和包装类，可能需要通过ref属性，引入其他的bean对象-->
+        <constructor-arg name="hiredate" ref="ddd"/>
+    </bean>
+
+    <!--setter注入   public void setLocAtion 对应的属性名=locAtion
+            注入空值请使用null标签-->
+    <bean class="com.study.di.Dept" id="dept4">
+        <property name="locAtion">
+            <null/>
+        </property>
+        <property name="deptno" value="1"/>
+        <property name="dname" value="二部"/>
+    </bean>
+
+    <!--p命令空间setter注入（简写版的setter注入）-->
+    <bean class="com.study.di.Emp" id="emp2"
+          p:empno="1" p:ename="小花" p:hiredate-ref="ddd"/>
+
+    <!--集合的类型的注入方法-->
+    <bean class="com.study.di.Girl" id="girl">
+        <property name="gname" value="女神"/>
+        <property name="luckyNumber">
+            <list>
+                <value>2</value>
+                <value>5</value>
+                <value>8</value>
+            </list>
+        </property>
+        <property name="manStars">
+            <list>
+                <value>易烊千玺</value>
+                <value>蔡徐坤</value>
+            </list>
+        </property>
+        <property name="honeys">
+            <set>
+                <value>男神</value>
+                <value>骚骚</value>
+            </set>
+        </property>
+        <property name="hotels">
+            <map>
+                <entry key="1" value="长江一号999"/>
+                <entry key="2" value="黄河三号222"/>
+            </map>
+        </property>
+        <property name="hobbies">
+            <props>
+                <prop key="运动">羽毛球</prop>
+                <prop key="娱乐">唱歌</prop>
+                <prop key="休闲">美容</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

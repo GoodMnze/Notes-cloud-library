@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      <!--注入系统的时间字段，sql.Date-->
+      <!--① 利用util.Date的无参构造方法-->
+      <bean class="java.util.Date" id="d"/>
+      <!--② sql.Date time = new sql.Date(d.getTime())-->
+      <bean id="time" class="java.sql.Date">
+            <constructor-arg name="date">
+                  <bean factory-bean="d" factory-method="getTime"/>
+            </constructor-arg>
+      </bean>
+      <bean class="com.study.di.GirlFriend" p:gid="1"
+            p:gname="天仙" p:loveTime-ref="time">
+      </bean>
+      <!--
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.format(new util.Date());——>返回格式化之后的字符串
+      -->
+      <bean class="java.text.SimpleDateFormat" id="sdf">
+            <constructor-arg name="pattern" value="yyyy-MM-dd"/>
+      </bean>
+      <bean id="n" factory-bean="sdf" factory-method="format">
+            <constructor-arg name="date">
+                  <bean class="java.util.Date"/>
+            </constructor-arg>
+      </bean>
+
+      <!--
+            java.util.Date ddd = new java.util.Date("yyyy/MM/dd");
+      -->
+<!--      <bean class="java.util.Date" id="ddd">-->
+<!--            <constructor-arg type="java.lang.String" value="yyyy/MM/dd"/>-->
+<!--      </bean>-->
+
+      <!--注入集合数据类型-->
+      <!--1、数组和List集合-->
+      <bean id="gf" class="com.study.di.GirlFriend">
+            <property name="gid" value="2"/>
+            <property name="gname" value="如花"/>
+            <property name="loveTime">
+                  <null/>
+            </property>
+            <property name="luckNumbers">
+                  <!--注入数组数据类型-->
+                  <list>
+                        <value>2</value>
+                        <value>8</value>
+                  </list>
+            </property>
+            <property name="manStar">
+                  <list>
+                        <value>易烊千玺</value>
+                        <value>王一博</value>
+                        <value>肖战</value>
+                  </list>
+            </property>
+            <property name="foods">
+                  <set>
+                        <value>帝王蟹</value>
+                        <value>鱼子酱</value>
+                  </set>
+            </property>
+            <property name="hotel">
+                  <map>
+                        <entry key="03001" value="香水湾3栋902号"/>
+                  </map>
+            </property>
+      </bean>
+</beans>

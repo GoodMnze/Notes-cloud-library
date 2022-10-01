@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--导入一个JDBC连接字符串的配置文件：PropertyPlaceholderConfigurer-->
+    <!--第一种方式导入配置文件-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>jdbc.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--第二种方式导入配置文件-->
+    <!--PropertiesFactoryBean-->
+<!--    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+<!--        &lt;!&ndash;classpath: 表示编译之后的根目录，resource文件夹内的配置文件发布之后默认就在根目录&ndash;&gt;-->
+<!--        <property name="location" value="classpath:jdbc.properties"/>-->
+<!--    </bean>-->
+    <!--2、配置数据源-->
+    <bean name="ds" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <constructor-arg name="targetDataSource">
+            <bean class="com.alibaba.druid.pool.DruidDataSource">
+                <property name="driverClassName" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.user}"/>
+                <property name="password" value="${jdbc.pwd}"/>
+                <!--初始大小-->
+                <property name="initialSize" value="5"/>
+                <!--最小连接数-->
+                <property name="minIdle" value="3"/>
+                <!--最大连接数-->
+                <property name="maxActive" value="10"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+    <!--3、创建JDBCTemplater对象-->
+    <bean id="jdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg name="dataSource" ref="ds"/>
+    </bean>
+    <!--4、创建EmpDAO的bean对象-->
+    <bean class="com.study.pojo.EmpDAO">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+</beans>

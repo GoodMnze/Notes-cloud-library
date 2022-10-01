@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--DI注入的方式-->
+    <!--1、构造器注入-->
+<!--    <bean id="cls" class="com.study.di.Clazz">-->
+<!--        &lt;!&ndash;① 根据名字来进行注入，可以不按照定义的顺序&ndash;&gt;-->
+<!--        <constructor-arg name="count" value="22"/>-->
+<!--        <constructor-arg name="name" value="TR02005"/>-->
+<!--        <constructor-arg name="cid" value="2005"/>-->
+<!--    </bean>-->
+<!--    <bean id="cls" class="com.study.di.Clazz">-->
+<!--        &lt;!&ndash;② 根据参数顺序来进行注入，-->
+<!--            则必须按照定义的顺序来，且参数值的类型一定要注意&ndash;&gt;-->
+<!--        <constructor-arg index="0" value="999"/>-->
+<!--        <constructor-arg index="1" value="TR02809"/>-->
+<!--        <constructor-arg index="2" value="8"/>-->
+<!--    </bean>-->
+    <bean id="time" class="java.util.Date"/>
+    <bean id="cls" class="com.study.di.Clazz">
+        <!--③ 根据类型来注入，顺序建议不要更换（顺序和定义的不同，不会报错）
+            ref  表示值不是普通的数据类型，需要引用ref别的bean-->
+        <constructor-arg type="java.lang.String" value="TR02999"/>
+        <constructor-arg type="java.lang.Integer" value="1"/>
+        <constructor-arg type="java.lang.Integer" value="23"/>
+        <constructor-arg type="java.util.Date" ref="time"/>
+    </bean>
+    <!--*********************************************-->
+    <!--2、Setter注入方式-->
+    <bean id="clazz2" class="com.study.di.Clazz">
+        <!--属性中的name，和bean的属性名无关，只和setter方法有关
+            setTime  -》 对应的name是  time-->
+        <property name="time" ref="time"/>
+        <property name="name" value="TR8888"/>
+        <property name="cid" value="8"/>
+        <property name="count" value="82"/>
+    </bean>
+    <!--3、p命名空间简写-->
+    <bean id="clazz_p" class="com.study.di.Clazz"
+          p:cid="1" p:name="TR12345" p:count="55"
+          p:time-ref="time"/>
+</beans>

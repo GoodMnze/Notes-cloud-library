@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+<!--AOP章节，Spring的XML方式的核心配置文件-->
+    <!--1、创建业务类的实例对象-->
+    <bean class="org.example.lesson3.MyService"/>
+    <!--2、创建切面类的实例对象-->
+    <bean id="aspect" class="org.example.lesson3.MyAspect"/>
+    <!--3、利用aop技术，将横切关注点注入到目标对象的连接点中-->
+    <aop:config>
+        <!--①定义连接点,利用execution表达式筛选目标对象（业务类）的方法-->
+        <aop:pointcut id="point"
+          expression="execution(* org.example.lesson3.MyService.*(..))"/>
+        <!--②指定切面对象-->
+        <aop:aspect ref="aspect">
+<!--            <aop:before method="handlerBefore" pointcut-ref="point"/>-->
+<!--            <aop:after method="handlerBefore" pointcut-ref="point"/>-->
+            <aop:pointcut id="cut"
+                          expression="execution(* org.example.lesson3.MyService.do*(..))"/>
+            <aop:around method="handlerAround" pointcut-ref="cut"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--数据源对象
+        LazyConnectionDataSourceProxy
+        1、是接口DataSource的实现类。实现了这个接口的所有方法。
+        2、为什么成为LazyConnection懒连接
+只有 dataSource 获取到Connection之后，
+在执行java.sql.Connection#prepareStatement(java.lang.String)时候，
+Spring才会主动去数据库连接池中获取Connection连接对象，
+这样做的好处就是提高数据库连接的使用率和效率
+    -->
+    <bean id="ds" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <property name="targetDataSource">
+            <!--1、阿里巴巴的druid数据源   DruidDataSource-->
+            <bean class="com.alibaba.druid.pool.DruidDataSource">
+                <!--可以根据连接对象自动识别驱动，∴可以不指定驱动字符串-->
+                <!--① 数据库连接字符串-->
+                <property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
+                <!--② 数据库连接用户名-->
+                <property name="username" value="scott"/>
+                <!--③ 数据库密码-->
+                <property name="password" value="123456"/>
+                <!--其他属性。非必需-->
+                <!--④ 连接池初始化大小-->
+                <property name="initialSize" value="2"/>
+                <!--⑤ 最小连接池-->
+                <property name="minIdle" value="1"/>
+                <!--⑥ 最大连接数-->
+                <property name="maxActive" value="5"/>
+            </bean>
+        </property>
+    </bean>
+    <!--2、实例化JdbcTemplate对象-->
+    <bean id="template" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="ds"/>
+    </bean>
+    <!--3、实例化DAO对象-->
+    <bean id="deptDAO" class="com.study.dao.DeptDAO">
+        <property name="jdbcTemplate" ref="template"/>
+    </bean>
+    <!--4、实例化Service对象-->
+    <bean class="com.study.service.DeptService">
+        <property name="dao" ref="deptDAO"/>
+    </bean>
+</beans>
